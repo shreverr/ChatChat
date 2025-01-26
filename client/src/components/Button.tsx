@@ -11,17 +11,11 @@ const Button: React.FC<ButtonProps> = ({
   disabled = false,
   ...props
 }) => {
-  const handleClick = () => {
-    const audio = new Audio("/click.mp3");
-    audio.play();
-  };
-
   return (
     <button
       {...props}
       disabled={disabled} // Pass the disabled prop to the button
       onClick={(e) => {
-        handleClick();
         props.onClick?.(e);
       }}
       className={`w-full px-3 sm:px-4 py-1.5 sm:py-2 text-white border-2 border-black shadow-[2px_2px_0_0_black] md:shadow-[4px_4px_0_0_black] hover:shadow-[1px_1px_0_0_black] active:shadow-none transition-shadow font-bold text-base sm:text-lg rounded-md md:rounded-lg ${

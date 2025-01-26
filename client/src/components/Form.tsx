@@ -1,4 +1,5 @@
-import React, { useState } from "react";
+"use client";
+import React, { useEffect, useRef, useState } from "react";
 import Button from "./Button";
 import Input from "./Input";
 import Select from "./Select";
@@ -20,11 +21,22 @@ const Form: React.FC<FormProps> = ({ onFormSubmit }) => {
     sex: "",
   });
 
+  // Use a ref to store the audio object
+  const audioRef = useRef<HTMLAudioElement | null>(null);
+
+  // Preload the audio when the component mounts
+  useEffect(() => {
+    audioRef.current = new Audio("/click.mp3");
+    audioRef.current.preload = "auto"; // Preload the audio file
+  }, []);
+
   const handleSubmit = () => {
+    if (audioRef.current) {
+      audioRef.current.play(); // Play the preloaded audio
+    }
     console.log("Form submitted:", formData);
     onFormSubmit();
   };
-
   const genderOptions = [
     { value: "male", label: "Male" },
     { value: "female", label: "Female" },

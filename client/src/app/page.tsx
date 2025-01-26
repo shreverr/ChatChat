@@ -11,7 +11,7 @@ const Home = () => {
   };
 
   return (
-    <main className="min-h-screen bg-app-bg bg-cover bg-center flex items-center justify-center p-2 sm:p-4 md:px-10">
+    <main className="min-h-screen bg-app-bg bg-[#FBD802] bg-cover bg-center flex items-center justify-center p-2 sm:p-4 md:px-10">
       <div className="w-full min-h-[500px] h-[calc(100vh-4rem)] flex flex-col items-center justify-center bg-[#852EFF] rounded-lg md:rounded-2xl border-2 border-white shadow-[4px_4px_0_0_black] md:shadow-[8px_8px_0_0_black] relative overflow-hidden">
         {/* VideoChat component as the background */}
         <div className="absolute inset-0 w-full h-full z-0">
