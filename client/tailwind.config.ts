@@ -13,7 +13,7 @@ export default {
         foreground: "var(--foreground)",
       },
       backgroundImage: {
-        'app-bg': "url('/background.png')", // Add this line
+        "app-bg": "url('/grids.svg')", // Add the custom background image
       },
     },
   },
