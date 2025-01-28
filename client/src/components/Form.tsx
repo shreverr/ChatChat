@@ -4,14 +4,14 @@ import Button from "./Button";
 import Input from "./Input";
 import Select from "./Select";
 
-interface FormData {
+export interface FormData {
   fullName: string;
   age: string;
   sex: string;
 }
 
 interface FormProps {
-  onFormSubmit: () => void;
+  onFormSubmit: (userData: FormData) => void;
 }
 
 const Form: React.FC<FormProps> = ({ onFormSubmit }) => {
@@ -35,7 +35,7 @@ const Form: React.FC<FormProps> = ({ onFormSubmit }) => {
       audioRef.current.play(); // Play the preloaded audio
     }
     console.log("Form submitted:", formData);
-    onFormSubmit();
+    onFormSubmit(formData);
   };
   const genderOptions = [
     { value: "male", label: "Male" },

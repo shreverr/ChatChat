@@ -1,3 +1,4 @@
+import { VideoCall } from "@/lib/videoCall";
 import React, { useState, useEffect, useRef } from "react";
 import {
   RiMapPinLine,
@@ -5,6 +6,8 @@ import {
   RiGooglePlayLine,
   RiSendPlaneFill,
 } from "react-icons/ri";
+import { FC } from 'react'
+import { FormData } from "../Form";
 
 interface ChatMessage {
   id: number;
@@ -12,19 +15,26 @@ interface ChatMessage {
   timestamp: Date;
 }
 
-const VideoChat = () => {
-  const name = "John Doe";
+interface VideoChatProps {
+  userData: FormData | null,
+}
+
+const VideoChat: FC<VideoChatProps> = ({ userData }) => {
+  const name = userData?.fullName || "";
   const initials = name
     .split(" ")
     .map((n) => n[0])
     .join("");
   const country = "IN";
-  const age = "25";
-  const gender = "male";
+  const age = userData?.age ||"";
+  const gender = userData?.sex || "";
   const [message, setMessage] = useState("");
   const [chatMessages, setChatMessages] = useState<ChatMessage[]>([]);
   const chatContainerRef = useRef<HTMLDivElement>(null);
-  const videoRef = useRef<HTMLVideoElement>(null); // Ref for the camera stream video element
+  const localVideoRef = useRef<HTMLVideoElement>(null); // Ref for the local camera stream video element
+  const remoteVideoRef = useRef<HTMLVideoElement>(null); // Ref for the remote video stream video element
+
+  let vid: VideoCall 
 
   const getGenderInitial = (gender: string) => {
     switch (gender.toLowerCase()) {
@@ -64,8 +74,14 @@ const VideoChat = () => {
         const stream = await navigator.mediaDevices.getUserMedia({
           video: true,
         });
-        if (videoRef.current) {
-          videoRef.current.srcObject = stream;
+        if (localVideoRef.current) {
+          localVideoRef.current.srcObject = stream;
+        }
+        vid = new VideoCall(stream, { fullName: 'shreshth', age: '20', gender: 'male'});
+
+        // Assuming `vid.remoteStream` is a MediaStream object
+        if (remoteVideoRef.current) {
+          remoteVideoRef.current.srcObject = vid.remoteStream;
         }
       } catch (error) {
         console.error("Error accessing the camera:", error);
@@ -76,8 +92,12 @@ const VideoChat = () => {
 
     // Cleanup function to stop the camera stream when the component unmounts
     return () => {
-      if (videoRef.current && videoRef.current.srcObject) {
-        const stream = videoRef.current.srcObject as MediaStream;
+      if (localVideoRef.current && localVideoRef.current.srcObject) {
+        const stream = localVideoRef.current.srcObject as MediaStream;
+        stream.getTracks().forEach((track) => track.stop());
+      }
+      if (remoteVideoRef.current && remoteVideoRef.current.srcObject) {
+        const stream = remoteVideoRef.current.srcObject as MediaStream;
         stream.getTracks().forEach((track) => track.stop());
       }
     };
@@ -89,7 +109,7 @@ const VideoChat = () => {
       <div className="w-full lg:w-1/2 relative">
         {/* Camera stream video element */}
         <video
-          ref={videoRef}
+          ref={localVideoRef}
           autoPlay
           muted
           playsInline
@@ -131,17 +151,12 @@ const VideoChat = () => {
       <div className="w-full lg:w-1/2 relative">
         {/* Video background for the right half */}
         <video
+          ref={remoteVideoRef}
           autoPlay
           muted
-          loop
           playsInline
           className="absolute inset-0 w-full h-full object-cover z-0 opacity-100 rounded-r-lg md:rounded-r-xl"
-        >
-          <source
-            src="http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ElephantsDream.mp"
-            type="video/mp4"
-          />
-        </video>
+        ></video>
         <div className="relative z-10 p-4 sm:p-6">
           <div className="flex items-center justify-between mb-8">
             <div className="flex items-center gap-2 sm:gap-4">
